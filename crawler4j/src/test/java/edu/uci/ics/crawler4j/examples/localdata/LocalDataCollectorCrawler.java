@@ -19,10 +19,11 @@ package edu.uci.ics.crawler4j.examples.localdata;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.spi.*;//Logger;
+import org.slf4j.spi.LoggerFactory;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
