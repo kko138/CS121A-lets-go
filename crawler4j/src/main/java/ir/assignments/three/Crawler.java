@@ -16,8 +16,19 @@ import edu.uci.ics.crawler4j.parser.*;
 //import edu.uci.ics.crawler4j.util.*;
 import java.sql.*;
 
+/**
+ * Changelog 1/24/2016:
+ * 	- Added: HTML links are written locally to project/data/...
+ * 			 Checks if folder names exist. If not, we create them.
+ * 	- Notes: urlLength is HARD CODED. ex) for http://www.sharonypark.com, urlLength = 26 cuz 26 characters in that string.
+ * 	- TODO: dynamically change urlLength without hardcoding.
+ * 	- Bugs: probably some
+ */
+
 public class Crawler extends WebCrawler {
 	private static int counturls = 0;
+	private int urlLength = 26;
+
 	private Connection connection;
 	/**
 	 * This method is for testing purposes only. It does not need to be used
@@ -65,18 +76,24 @@ public class Crawler extends WebCrawler {
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
 
+
 		//System.out.println("Number of Visited Pages: " + ++counturls);
 		System.out.println("URL: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
-			File outFile = new File("/data/" + url + ".txt");
+			File outFile = new File("./data/" + url.substring(urlLength) + ".html");
+			
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			Set<WebURL> links = htmlParseData.getOutgoingUrls();
 			try {													//WIP: to write data crawler captures into a file
+				File parent_directory = outFile.getParentFile();
+
+				if (null != parent_directory)
+					parent_directory.mkdirs();
 				FileWriter writeFile = new FileWriter(outFile);
-				writeFile.write();
+				writeFile.write(html);
 			} catch (IOException ex) {
 				System.out.println("File not found.");
 			}

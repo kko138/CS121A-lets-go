@@ -1,1 +1,3 @@
 .idea/
+crawler4j/data/**
+crawler4j/crawlStorageFolder/**
