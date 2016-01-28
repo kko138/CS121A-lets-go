@@ -6,6 +6,8 @@ import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
+import java.sql.Connection;
+
 /**
  * Created by Sophia,Cassie,Kevin on 1/23/2016. (And Sam!)
  * Class that contains the main. Sets up storage location, politeness delay, user agent string, and seed URL. Runs the crawler.
@@ -27,6 +29,7 @@ public class Controller {
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
+        config.setResumableCrawling(true);
 
         /*
          * For each crawl, you need to add some seed urls. These are the first
@@ -42,6 +45,7 @@ public class Controller {
          * Start the crawl. This is a blocking operation, meaning that your code
          * will reach the line after this only when crawling is finished.
          */
+
         controller.start(Crawler.class, numberOfCrawlers);
     }
 }

@@ -17,6 +17,16 @@ import edu.uci.ics.crawler4j.parser.*;
 import java.sql.*;
 
 /**
+ * Changelog 1/28/2016:
+ *  - Added: HTML links are no longer written locally to project/data/...
+ *  		 They are now written to a db -- install mysql!
+ *
+ *  - Notes: crawl all subdomains (i don't know how to do this) -- jk got it
+ *  		 urlLength is no longer needed :)
+ *  - TODO: a lot
+ *  - Bugs: probably some
+ *
+ *
  * Changelog 1/24/2016:
  * 	- Added: HTML links are written locally to project/data/...
  * 			 Checks if folder names exist. If not, we create them.
@@ -25,10 +35,9 @@ import java.sql.*;
  * 	- Bugs: probably some
  */
 
-public class Crawler extends WebCrawler {
-	private int urlLength = 26;
+public class Crawler extends WebCrawler{
+	Connection connection;
 
-	private Connection connection;
 	/**
 	 * This method is for testing purposes only. It does not need to be used
 	 * to answer any of the questions in the assignment. However, it must
@@ -64,7 +73,8 @@ public class Crawler extends WebCrawler {
 			//return false;
 		}
 		return !FILTERS.matcher(href).matches()
-				&& href.startsWith("http://www.sharonypark.com");
+				// changed to contains so we can crawl subdomains!
+				&& href.contains("sharonypark.com");
 	}
 
 	/**
@@ -75,32 +85,41 @@ public class Crawler extends WebCrawler {
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
 
+		try {
+			connect("root","myrootpw");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
 		System.out.println("URL: " + url);
 
+
 		if (page.getParseData() instanceof HtmlParseData) {
-			// somewhat recursively creates directories and assigns a name to it.
-			File outFile = new File("./data/" + url.substring(urlLength) + ".html");
 
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			Set<WebURL> links = htmlParseData.getOutgoingUrls();
-			try {													//WIP: to write data crawler captures into a file
-
-				// creates the directory if it doesn't already exist
-				File parent_directory = outFile.getParentFile();
-				if (null != parent_directory)
-					parent_directory.mkdirs();
-
-				FileWriter writeFile = new FileWriter(outFile);
-				writeFile.write(html);
-			} catch (IOException ex) {
-				System.out.println("File not found.");
-			}
 
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
+
+			try {
+				String sql = "INSERT INTO data (url, html, textfile) VALUES (?, ?, ?);";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setString(1, url);
+				ps.setString(2, html);
+				ps.setString(3, text);
+				ps.executeUpdate();
+
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -121,8 +140,22 @@ public class Crawler extends WebCrawler {
 	 * @return
 	 * @throws SQLException
      */
-	public Connection getSQLConnection(String user, String pw) throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql:///crawlData", user, pw);
+	public static Connection getSQLConnection(String user, String pw) throws SQLException {
+		return DriverManager.getConnection("jdbc:mysql:///crawldata", user, pw);
+	}
+
+	public void execSql(String statement) throws SQLException{
+		Statement select = this.getConnection().createStatement();
+
+		select.execute(statement);
+	}
+
+	public Connection getConnection() {
+		return this.connection;
+	}
+
+	public void connect(String user, String password) throws SQLException {
+		this.connection = this.getSQLConnection(user, password);
 	}
 }
 
