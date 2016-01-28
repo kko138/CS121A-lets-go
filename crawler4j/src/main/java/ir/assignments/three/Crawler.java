@@ -141,7 +141,7 @@ public class Crawler extends WebCrawler{
 	 * @throws SQLException
      */
 	public static Connection getSQLConnection(String user, String pw) throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql:///crawldata", user, pw);
+		return DriverManager.getConnection("jdbc:mysql:///crawldata?useSSL=false", user, pw);
 	}
 
 	public void execSql(String statement) throws SQLException{
