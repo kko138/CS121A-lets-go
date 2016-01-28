@@ -19,7 +19,7 @@ public class Controller {
 
         CrawlConfig config = new CrawlConfig();
         config.setCrawlStorageFolder(crawlStorageFolder);
-        config.setPolitenessDelay(600);         //sets the crawling delay at 600 ms
+        config.setPolitenessDelay(900);         // lets not get blacklisted :(
         config.setUserAgentString("UCI Inf141-CS121 crawler 33196560 18923814 56956077 52478518");      //specified user agent string from Bidyuk
 
         /*
@@ -39,7 +39,7 @@ public class Controller {
         //controller.addSeed("http://www.ics.uci.edu/~lopes/");
         //controller.addSeed("http://www.ics.uci.edu/~welling/");
         //controller.addSeed("http://www.ics.uci.edu/");
-        controller.addSeed("http://www.sharonypark.com");       //testing crawler on Sharon's website (with John's approval so long as we don't crawl too often)
+        controller.addSeed("http://www.ics.uci.edu/");       //les do it
 
         /*
          * Start the crawl. This is a blocking operation, meaning that your code

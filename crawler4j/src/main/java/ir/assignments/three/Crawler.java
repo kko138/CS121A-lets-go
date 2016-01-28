@@ -20,11 +20,15 @@ import java.sql.*;
  * Changelog 1/28/2016:
  *  - Added: HTML links are no longer written locally to project/data/...
  *  		 They are now written to a db -- install mysql!
+ *	         Now crawls dynamic links
  *
  *  - Notes: crawl all subdomains (i don't know how to do this) -- jk got it
  *  		 urlLength is no longer needed :)
- *  - TODO: a lot
+ *  		 We ready for prime time boys
+ *  		 
+ *  - TODO: not much
  *  - Bugs: probably some
+ *  		(does robots.txt work? idk)
  *
  *
  * Changelog 1/24/2016:
@@ -67,14 +71,14 @@ public class Crawler extends WebCrawler{
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {		//need to work on this method, (dynamic links)
 		String href = url.getURL().toLowerCase();
-		if(href.contains("?")) {
-			int posQ = href.indexOf("?");
-			href = href.substring(0, posQ);
-			//return false;
-		}
+//		if(href.contains("?")) {
+//			int posQ = href.indexOf("?");
+//			href = href.substring(0, posQ);
+//			//return false;
+//		}
 		return !FILTERS.matcher(href).matches()
 				// changed to contains so we can crawl subdomains!
-				&& href.contains("sharonypark.com");
+				&& href.contains("ics.uci.edu");
 	}
 
 	/**
