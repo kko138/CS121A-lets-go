@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import edu.uci.ics.crawler4j.crawler.*;
+import edu.uci.ics.crawler4j.fetcher.PageFetcher;
+import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
+import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import edu.uci.ics.crawler4j.url.*;
 //import edu.uci.ics.crawler4j.fetcher.*;
 import edu.uci.ics.crawler4j.parser.*;
@@ -40,7 +43,8 @@ import java.sql.*;
  */
 
 public class Crawler extends WebCrawler{
-	Connection connection;
+	static Connection connection;
+	public static int iteration = 0;
 
 	/**
 	 * This method is for testing purposes only. It does not need to be used
@@ -89,13 +93,6 @@ public class Crawler extends WebCrawler{
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
 
-		try {
-			connect("root","myrootpw");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 
 		System.out.println("URL: " + url);
 
@@ -110,6 +107,7 @@ public class Crawler extends WebCrawler{
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
+			System.out.println("Number of websites crawled: " + ++iteration);
 
 			try {
 				String sql = "INSERT INTO data (url, html, textfile) VALUES (?, ?, ?);";
@@ -158,8 +156,52 @@ public class Crawler extends WebCrawler{
 		return this.connection;
 	}
 
-	public void connect(String user, String password) throws SQLException {
-		this.connection = this.getSQLConnection(user, password);
+	public static void connect(String user, String password) throws SQLException {
+		connection = getSQLConnection(user, password);
+	}
+
+	public static void main(String[] args) throws Exception {
+		String crawlStorageFolder = "./crawlStorageFolder/";       //change to match whomever's computer we're using
+		int numberOfCrawlers = 7;
+
+		CrawlConfig config = new CrawlConfig();
+		config.setCrawlStorageFolder(crawlStorageFolder);
+		config.setPolitenessDelay(900);         // lets not get blacklisted :(
+		config.setUserAgentString("UCI Inf141-CS121 crawler 33196560 18923814 56956077 52478518");      //specified user agent string from Bidyuk
+
+
+		try {
+			connect("root","1234");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+        /*
+         * Instantiate the controller for this crawl.
+         */
+		PageFetcher pageFetcher = new PageFetcher(config);
+		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
+		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
+		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
+		config.setResumableCrawling(true);
+
+        /*
+         * For each crawl, you need to add some seed urls. These are the first
+         * URLs that are fetched and then the crawler starts following links
+         * which are found in these pages
+         */
+		//controller.addSeed("http://www.ics.uci.edu/~lopes/");
+		//controller.addSeed("http://www.ics.uci.edu/~welling/");
+		//controller.addSeed("http://www.ics.uci.edu/");
+		controller.addSeed("http://www.ics.uci.edu/");       //les do it
+
+        /*
+         * Start the crawl. This is a blocking operation, meaning that your code
+         * will reach the line after this only when crawling is finished.
+         */
+
+		controller.start(Crawler.class, numberOfCrawlers);
 	}
 }
 
