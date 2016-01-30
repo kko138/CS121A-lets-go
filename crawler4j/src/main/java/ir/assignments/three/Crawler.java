@@ -143,7 +143,7 @@ public class Crawler extends WebCrawler{
 	 * @throws SQLException
      */
 	public static Connection getSQLConnection(String user, String pw) throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql:///crawldata?useSSL=false", user, pw);
+		return DriverManager.getConnection("jdbc:mysql:///secondcrawl?useSSL=false", user, pw);
 	}
 
 	public void execSql(String statement) throws SQLException{
@@ -185,6 +185,8 @@ public class Crawler extends WebCrawler{
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 		config.setResumableCrawling(true);
+		config.setSocketTimeout(10000);
+		config.setConnectionTimeout(15000);
 
         /*
          * For each crawl, you need to add some seed urls. These are the first

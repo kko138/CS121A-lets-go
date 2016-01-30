@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS crawlData;
+CREATE DATABASE IF NOT EXISTS crawldb;
 
-USE crawlData;
+USE crawldb;
 
 CREATE TABLE IF NOT EXISTS data(
 url varchar(1000) NOT NULL,
