@@ -1,3 +1,8 @@
+/**
+ * Too lazy to make a readme: if you pull this ask Kevin for help
+ * It should be but it's easier to read if this new readme is on the top
+ */
+
 package ir.assignments.three;
 
 import java.io.File;
@@ -28,7 +33,7 @@ import java.sql.*;
  *  - Notes: crawl all subdomains (i don't know how to do this) -- jk got it
  *  		 urlLength is no longer needed :)
  *  		 We ready for prime time boys
- *  		 
+ *
  *  - TODO: not much
  *  - Bugs: probably some
  *  		(does robots.txt work? idk)
@@ -50,7 +55,7 @@ public class Crawler extends WebCrawler{
 	 * This method is for testing purposes only. It does not need to be used
 	 * to answer any of the questions in the assignment. However, it must
 	 * function as specified so that your crawler can be verified programatically.
-	 * 
+	 *
 	 * This methods performs a crawl starting at the specified seed URL. Returns a
 	 * collection containing all URLs visited during the crawl.
 	 */
@@ -136,7 +141,7 @@ public class Crawler extends WebCrawler{
 	 * @param user
 	 * @param pw
 	 * @throws SQLException
-     */
+	 */
 	public void connectDB(String user, String pw) throws SQLException {
 		this.connection = this.getSQLConnection(user, pw);
 	}
@@ -147,9 +152,9 @@ public class Crawler extends WebCrawler{
 	 * @param pw
 	 * @return
 	 * @throws SQLException
-     */
+	 */
 	public static Connection getSQLConnection(String user, String pw) throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql:///crawldata?useSSL=false", user, pw);
+		return DriverManager.getConnection("jdbc:mysql:///crawldb?useSSL=false", user, pw);
 	}
 
 	public void execSql(String statement) throws SQLException{
@@ -173,12 +178,14 @@ public class Crawler extends WebCrawler{
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(900);         // lets not get blacklisted :(
-		config.setUserAgentString("UCI Inf141-CS121 crawler 33196560 18923814 56956077 52478518");      //specified user agent string from Bidyuk
 		config.setResumableCrawling(true);
 		config.setMaxDownloadSize(100000000);
 
+		config.setUserAgentString("test");      //specified user agent string from Bidyuk
+
+
 		try {
-			connect("root","1234");
+			connect("root","arrow0000"); // nice mysql pw lol
 		}
 		catch (Exception e)
 		{
