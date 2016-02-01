@@ -110,12 +110,18 @@ public class Crawler extends WebCrawler{
 			System.out.println("Number of websites crawled: " + ++iteration);
 
 			try {
-				String sql = "INSERT INTO data (url, html, textfile) VALUES (?, ?, ?);";
-				PreparedStatement ps = connection.prepareStatement(sql);
-				ps.setString(1, url);
-				ps.setString(2, html);
-				ps.setString(3, text);
-				ps.executeUpdate();
+				Statement stateOne = this.getConnection().createStatement();
+				ResultSet check = stateOne.executeQuery("select * from data where url=\"" + url + "\"");
+
+				if (!check.next())
+				{
+					String sql = "INSERT INTO data (url, html, textfile) VALUES (?, ?, ?);";
+					PreparedStatement ps = connection.prepareStatement(sql);
+					ps.setString(1, url);
+					ps.setString(2, html);
+					ps.setString(3, text);
+					ps.executeUpdate();
+				}
 
 			}
 			catch (Exception e)
@@ -143,7 +149,7 @@ public class Crawler extends WebCrawler{
 	 * @throws SQLException
      */
 	public static Connection getSQLConnection(String user, String pw) throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql:///secondcrawl?useSSL=false", user, pw);
+		return DriverManager.getConnection("jdbc:mysql:///crawldata?useSSL=false", user, pw);
 	}
 
 	public void execSql(String statement) throws SQLException{
@@ -168,7 +174,8 @@ public class Crawler extends WebCrawler{
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(900);         // lets not get blacklisted :(
 		config.setUserAgentString("UCI Inf141-CS121 crawler 33196560 18923814 56956077 52478518");      //specified user agent string from Bidyuk
-
+		config.setResumableCrawling(true);
+		config.setMaxDownloadSize(100000000);
 
 		try {
 			connect("root","1234");
@@ -184,9 +191,7 @@ public class Crawler extends WebCrawler{
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-		config.setResumableCrawling(true);
-		config.setSocketTimeout(10000);
-		config.setConnectionTimeout(15000);
+
 
         /*
          * For each crawl, you need to add some seed urls. These are the first
