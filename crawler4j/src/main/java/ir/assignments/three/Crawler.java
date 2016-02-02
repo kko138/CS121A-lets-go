@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.uci.ics.crawler4j.crawler.*;
@@ -85,9 +86,20 @@ public class Crawler extends WebCrawler{
 //			href = href.substring(0, posQ);
 //			//return false;
 //		}
-		return !FILTERS.matcher(href).matches()
-				// changed to contains so we can crawl subdomains!
-				&& href.contains("ics.uci.edu");
+
+		String regex = "\\/\\/(.*)\\/";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(href);
+
+		if(m.find())
+		{
+			return !FILTERS.matcher(href).matches()
+					// changed to contains so we can crawl subdomains!
+					&& m.group(1).contains("ics.uci.edu");
+
+		}
+
+		return false;
 	}
 
 	/**

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Kevin on 2/1/2016.
  */
-public class Analyize {
+public class Analyze {
     static Connection connection;
 
     public static Connection getSQLConnection(String user, String pw) throws SQLException {
