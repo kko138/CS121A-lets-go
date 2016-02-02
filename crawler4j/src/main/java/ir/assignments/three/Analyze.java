@@ -28,8 +28,7 @@ public class Analyze {
         connection = getSQLConnection(user, password);
     }
 
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         ArrayList<String> all = new ArrayList<>();
         ResultSet tempResult;
         String resultString = new String();
@@ -37,8 +36,7 @@ public class Analyze {
             connect("root", "1234");
             Statement state = connection.createStatement();
             tempResult = state.executeQuery("SELECT textfile FROM data limit 100");
-            while(tempResult.next())
-            {
+            while(tempResult.next()) {
                 resultString = tempResult.getString("textfile");
                 all.addAll(Utilities.tokenizeFile(resultString));
             }
@@ -46,8 +44,7 @@ public class Analyze {
             List<Frequency> test = WordFrequencyCounter.computeWordFrequencies(all);
             Utilities.printFrequencies(test);
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

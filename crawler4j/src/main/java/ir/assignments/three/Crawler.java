@@ -127,22 +127,15 @@ public class Crawler extends WebCrawler{
 			System.out.println("Number of websites crawled: " + ++iteration);
 
 			try {
-				Statement stateOne = this.getConnection().createStatement();
-				ResultSet check = stateOne.executeQuery("select * from data where url=\"" + url + "\"");
-
-				if (!check.next())
-				{
-					String sql = "INSERT INTO data (url, html, textfile) VALUES (?, ?, ?);";
-					PreparedStatement ps = connection.prepareStatement(sql);
-					ps.setString(1, url);
-					ps.setString(2, html);
-					ps.setString(3, text);
-					ps.executeUpdate();
-				}
+				String sql = "INSERT INTO data (url, html, textfile) VALUES (?, ?, ?);";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setString(1, url);
+				ps.setString(2, html);
+				ps.setString(3, text);
+				ps.executeUpdate();
 
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
