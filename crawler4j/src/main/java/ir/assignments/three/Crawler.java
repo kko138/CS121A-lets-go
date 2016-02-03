@@ -188,9 +188,10 @@ public class Crawler extends WebCrawler{
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(900);         // lets not get blacklisted :(
-		config.setUserAgentString("UCI Inf141-CS121 crawler 33196560 18923814 56956077 52478518");      //specified user agent string from Bidyuk
 		config.setResumableCrawling(true);
 		config.setMaxDownloadSize(100000000);
+		config.setUserAgentString("test");      //specified user agent string from Bidyuk
+
 
 
 		try {

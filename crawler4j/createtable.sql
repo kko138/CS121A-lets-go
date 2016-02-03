@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS crawldb;
 USE crawldb;
 
 CREATE TABLE IF NOT EXISTS data(
-url varchar(1000) NOT NULL,
+url varchar(1000) NOT NULL UNIQUE,
 html longtext NOT NULL,
 textfile mediumtext not null
 );
