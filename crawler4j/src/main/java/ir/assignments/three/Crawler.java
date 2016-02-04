@@ -81,24 +81,23 @@ public class Crawler extends WebCrawler{
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {		//need to work on this method, (dynamic links)
 		String href = url.getURL().toLowerCase();
-//		if(href.contains("?")) {
-//			int posQ = href.indexOf("?");
-//			href = href.substring(0, posQ);
-//			//return false;
-//		}
 
-		String regex = "\\/\\/(.*)\\/";
+		String regex = "\\/\\/(.*?)\\/";
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(href);
 
 		if(m.find())
 		{
-			if(m.group(1).equals("ics.uci.edu"))
+
+			if(m.group(1).contains("duttgroup"))
+				return false;
+			else if(m.group(1).equals("ics.uci.edu"))
 				return !FILTERS.matcher(href).matches();
 			else if(m.group(1).equals("www.ics.uci.edu"))
 				return !FILTERS.matcher(href).matches();
 			else if(m.group(1).contains(".ics.uci.edu"))
 				return !FILTERS.matcher(href).matches();
+
 			else
 				return false;
 
@@ -164,7 +163,7 @@ public class Crawler extends WebCrawler{
 	 * @throws SQLException
 	 */
 	public static Connection getSQLConnection(String user, String pw) throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql:///crawldb?useSSL=false", user, pw);
+		return DriverManager.getConnection("jdbc:mysql:///crawldata?useSSL=false", user, pw);
 	}
 
 	public void execSql(String statement) throws SQLException{
@@ -190,8 +189,7 @@ public class Crawler extends WebCrawler{
 		config.setPolitenessDelay(900);         // lets not get blacklisted :(
 		config.setResumableCrawling(true);
 		config.setMaxDownloadSize(100000000);
-		config.setUserAgentString("test");      //specified user agent string from Bidyuk
-
+		config.setUserAgentString("UCI Inf141-CS121 crawler 33196560 18923814 56956077 52478518");      //specified user agent string from Bidyuk
 
 
 		try {
