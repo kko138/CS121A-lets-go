@@ -1,3 +1,6 @@
+/**
+ * authors: Cassie Jeansonne 18923914, Kevin Ko 56956077, Samuel Lin 52478518, Sophia Chan 33196560
+ */
 package ir.assignments.three;
 
 /**

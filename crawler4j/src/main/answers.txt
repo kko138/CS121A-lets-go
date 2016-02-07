@@ -1,3 +1,6 @@
+/**
+ * authors: Cassie Jeansonne 18923914, Kevin Ko 56956077, Samuel Lin 52478518, Sophia Chan 33196560
+ */
 Put your answers to the questions here, on in a similarly named .doc or .pdf file.
 
 1. How much time did it take to crawl the entire domain?

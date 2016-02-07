@@ -1,3 +1,6 @@
+/**
+ * authors: Cassie Jeansonne 18923914, Kevin Ko 56956077, Samuel Lin 52478518, Sophia Chan 33196560
+ */
 package ir.assignments.three;
 
 import java.io.File;
@@ -82,18 +85,15 @@ public class Utilities {
 
 
 	/**
-	 * Takes a list of {@link Frequency}s and prints it to standard out. It also
-	 * prints out the total number of items, and the total number of unique items.
+	 * Takes a list of {@link Frequency}s and outputs into a file. It also
+	 * outputs the total number of items, and the total number of unique items.
 	 *
-	 * Example one:
+	 * Example:
 	 *
 	 * Given the input list of word frequencies
 	 * ["sentence:2", "the:1", "this:1", "repeats:1",  "word:1"]
 	 *
-	 * The following should be printed to standard out
-	 *
-	 * Total item count: 6
-	 * Unique item count: 5
+	 * The following should be outputted to the file:
 	 *
 	 * sentence	2
 	 * the		1
@@ -101,77 +101,8 @@ public class Utilities {
 	 * repeats	1
 	 * word		1
 	 *
-	 *
-	 * Example two:
-	 *
-	 * Given the input list of 2-gram frequencies
-	 * ["you think:2", "how you:1", "know how:1", "think you:1", "you know:1"]
-	 *
-	 * The following should be printed to standard out
-	 *
-	 * Total 2-gram count: 6
-	 * Unique 2-gram count: 5
-	 *
-	 * you think	2
-	 * how you		1
-	 * know how		1
-	 * think you	1
-	 * you know		1
-	 *
 	 * @param frequencies A list of frequencies.
 	 */
-//	public static void printFrequencies(List<Frequency> frequencies) {
-//		int total = 0;
-//		int unique = 0;
-//		int highestCharCount = 0;
-//		int numGrams = 0;
-//
-//		// Figure out how many grams. If frequency is not iterable gracefully catch exception.
-//		try{
-//			Iterator<Frequency> itr = frequencies.iterator();
-//			String s = itr.next().toString();
-//			StringTokenizer st = new StringTokenizer(s);
-//			numGrams = st.countTokens();
-//		} catch (Exception e)
-//		{
-//			System.out.println("No elements in the Frequency!");
-//		}
-//
-//
-//		// Calculate total, unique, and highestCharCount
-//		for (Frequency temp : frequencies)
-//		{
-//			total += temp.getFrequency();
-//			unique += 1;
-//			if (temp.getText().length() > highestCharCount)
-//				highestCharCount = temp.getText().length();
-//		}
-//
-//		// output depends on number of grams
-//		if (numGrams == 1)
-//		{
-//			System.out.println("Total item count: " + total);
-//			System.out.println("Unique item count: " + unique + "\n");
-//		}
-//		else if (numGrams == 2)
-//		{
-//			System.out.println("Total 2-gram count: " + total);
-//			System.out.println("Unique 2-gram count: " + unique + "\n");
-//		}
-//		else
-//		{
-//			System.out.println("Total palindrome count: " + total);
-//			System.out.println("Unique palindrome count: " + unique + "\n");
-//		}
-//
-//		// print regardless
-//		for (Frequency temp : frequencies)
-//		{
-//			System.out.print(String.format("%-" + Integer.toString(highestCharCount) + "s\t", temp.getText()));
-//			System.out.println(temp.getFrequency());
-//		}
-//	}
-
 	public static void storeFrequencies(List<Frequency> frequencies) {
 		try {
 
@@ -193,12 +124,16 @@ public class Utilities {
 			}
 
 
-			// print regardless
+			int countOfWords = 1;
+			// print top 500 words
 			for (Frequency temp : frequencies) {
+				if(countOfWords == 500)
+					break;
 				fout.write(temp.getText() + ", " + temp.getFrequency() + "\r\n");
+				countOfWords++;
+
 			}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

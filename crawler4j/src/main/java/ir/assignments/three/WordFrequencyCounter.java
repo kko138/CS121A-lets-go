@@ -1,3 +1,6 @@
+/**
+ * authors: Cassie Jeansonne 18923914, Kevin Ko 56956077, Samuel Lin 52478518, Sophia Chan 33196560
+ */
 package ir.assignments.three;
 
 import ir.assignments.three.helper.gt;
@@ -9,9 +12,6 @@ import java.util.HashMap;
 
 import java.util.List;
 
-/**
- * Counts the total number of words and their frequencies in a text file.
- */
 public final class WordFrequencyCounter {
 
 	/**

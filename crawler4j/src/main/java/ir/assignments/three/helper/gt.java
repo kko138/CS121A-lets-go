@@ -1,3 +1,6 @@
+/**
+ * authors: Cassie Jeansonne 18923914, Kevin Ko 56956077, Samuel Lin 52478518, Sophia Chan 33196560
+ */
 package ir.assignments.three.helper;
 
 import java.util.Comparator;
@@ -9,8 +12,7 @@ import java.util.Map;
  * It implements Comparator and redefines the compare function to
  * sort a map by value FIRST, and if two key,value pairs have the same value, sort alphabetically.
  * Used and constructed in TreeMaps where kv pairs are <String,Integer>
- * 
- * @author Kevin
+ *
  *
  */
 public class gt implements Comparator<String>
@@ -22,7 +24,13 @@ public class gt implements Comparator<String>
 	{
 		this.theMap = start;
 	}
-	
+
+	/**
+	 * overrides compare() in Comparator to sort by value and then alphabetically
+	 * @param x
+	 * @param y
+     * @return int
+     */
 	@Override
 	public int compare(String x, String y)
 	{
