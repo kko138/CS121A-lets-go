@@ -127,8 +127,11 @@ public class Utilities {
 			int countOfWords = 1;
 			// print top 500 words
 			for (Frequency temp : frequencies) {
-				if(countOfWords == 500)
+				if(countOfWords > 500)
+				{
+					fout.close();
 					break;
+				}
 				fout.write(temp.getText() + ", " + temp.getFrequency() + "\r\n");
 				countOfWords++;
 
