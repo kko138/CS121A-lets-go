@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Indexer {
-    static HashMap<String, Integer> map = new HashMap<>();
+    static HashMap<String, Integer> term2termid = new HashMap<>();
     static int counter = 0;
 
     /**
@@ -37,8 +37,8 @@ public class Indexer {
 
         //checks if word is in map, if not adds it
         for(int i = 0; i < tokenTemp.length; i++) {
-            if(!map.containsKey(tokenTemp[i])) {
-                map.put(tokenTemp[i], ++counter);
+            if(!term2termid.containsKey(tokenTemp[i])) {
+                term2termid.put(tokenTemp[i], ++counter);
             }
         }
 
@@ -64,7 +64,7 @@ public class Indexer {
     public String toString() {
         String toReturn = "";
         //prints map contents
-        for(Map.Entry<String,Integer> entry: map.entrySet()) {
+        for(Map.Entry<String,Integer> entry: term2termid.entrySet()) {
             toReturn += entry.getKey() + ": " + entry.getValue() + "\n";
         }
         return toReturn;
