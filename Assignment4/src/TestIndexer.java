@@ -1,5 +1,5 @@
 import java.io.File;
-import java.util.Scanner;
+import java.util.*;
 
 import org.json.*;
 /**
@@ -7,35 +7,79 @@ import org.json.*;
  */
 public class TestIndexer {
     public static void main(String[] args) {
-        final File folder = new File("C:\\bidyuk files\\Html");
-        Indexer i = new Indexer();
+        long start = System.currentTimeMillis();
+        final File folder = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\smallBbidyuk\\Html");
+        Indexer indexer = new Indexer();
 
-        File jsonFile = new File("C:\\bidyuk files\\html_files.json");
+        File jsonFile = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\smallBbidyuk\\html_files.json");
         String jsonStr = "";
-        try
-        {
+
+        //grabbing lines from jsonFile
+        try {
             Scanner sc = new Scanner(jsonFile);
             while(sc.hasNext())
                 jsonStr += sc.nextLine() + "\n";
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        JSONObject json = new JSONObject(jsonStr);
-        JSONArray arr = json.getJSONArray()
 
-
-
-        for(final File fe: folder.listFiles()) {
-           i.readFile(fe);
+        HashMap<String,Integer> json = new HashMap<>();
+        //creating new hashmap based on json file contents
+        try {
+            json = jsonToMap(jsonStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        System.out.println(i.toString());
+        //iterating through a directory and reading from the files
+        for(final File fe: folder.listFiles()) {
+           indexer.readFile(fe, json);
+        }
 
-//        File fileName = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\bbidyuk_html_files\\Html\\access.ics.uci.educontact.html");
-//        i.readFile(fileName);
+        indexer.writeFile();
+        System.out.println("Runtime: " + (System.currentTimeMillis()-start) + " ms");
+    }
+
+    /**
+     * jsonToMap(): Given a string taken from a json file, turns contents into a hashmap
+     * @param jsonContents
+     * @return
+     * @throws JSONException
+     */
+    private static HashMap jsonToMap(String jsonContents) throws JSONException {
+        HashMap<String, Integer> map = new HashMap<>();
+        JSONObject jObject = new JSONObject(jsonContents);
+        Iterator<?> keys = jObject.keys();
+
+        //temporary map to insert into the REAL map
+
+
+        while( keys.hasNext() ){
+            int k = Integer.parseInt((String)keys.next());  //docID
+            Object ghetto = jObject.get(Integer.toString(k));   //temporary variable to convert into a String
+            String v = ghetto.toString();   //temporary variable holding new json file contents to parse
+
+            //ghetto recursion leap of faith
+            JSONObject jObject2 = new JSONObject(v);
+            Iterator<?> secondKey = jObject2.keys();
+
+            String fil = "";
+            while( secondKey.hasNext())
+            {
+                String str = (String)secondKey.next();
+                String strKey = jObject2.getString(str);
+                fil = strKey;
+                break;
+            }
+
+            //end of ghetto recursion
+
+
+            map.put(fil, k);
+        }
+        return map;
     }
 
 
