@@ -4,16 +4,13 @@
  */
 import org.jsoup.Jsoup;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Indexer {
     static HashMap<String, Integer> term2termid = new HashMap<>();
     static HashMap<Integer,ArrayList<Integer>> docid2termlist =  new HashMap<>();
     static HashMap<Integer,String> termid2term = new HashMap<>();
-    static HashMap<Integer,ArrayList<Integer>> termid2doclist = new HashMap<>();
+    static HashMap<Integer,LinkedHashSet<Integer>> termid2doclist = new HashMap<>();
     static int counter = 0;
 
     /**
@@ -69,12 +66,12 @@ public class Indexer {
             }
 
             //examples of more composite indexes: example 3, term id to doc list
-            if(termid2doclist.containsKey(tokenTemp[i])) {
-                ArrayList<Integer> templs2 = termid2doclist.get(counter);
+            if(termid2doclist.containsKey(counter)) {
+                LinkedHashSet<Integer> templs2 = termid2doclist.get(counter);
                 templs2.add(currentDoc);
                 termid2doclist.put(counter, templs2);
             } else {
-                ArrayList<Integer> templ2 = new ArrayList<Integer>();
+                LinkedHashSet<Integer> templ2 = new LinkedHashSet<>();
                 templ2.add(currentDoc);
                 termid2doclist.put(counter, templ2);
             }
@@ -163,7 +160,7 @@ public class Indexer {
                 termid2doclistF.createNewFile();
             }
             PrintStream out = new PrintStream(new FileOutputStream(termid2doclistF));
-            for(Map.Entry<Integer,ArrayList<Integer>> si: termid2doclist.entrySet()) {
+            for(Map.Entry<Integer,LinkedHashSet<Integer>> si: termid2doclist.entrySet()) {
                 out.println(si.getKey() + ": " + si.getValue());
             }
             out.close();
