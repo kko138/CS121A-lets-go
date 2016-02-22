@@ -1,17 +1,16 @@
 import java.io.File;
 import java.util.*;
-
 import org.json.*;
 /**
- * Created by Cassie, Kevin, Sam, Sophia on 2/20/2016.
+ * Created by Cassie 18923914, Kevin 56956077, Sam 52478518, Sophia 33196560
  */
 public class TestIndexer {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        final File folder = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\smallBbidyuk\\Html");
+        final File folder = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\bbidyuk_html_files\\Html");
         Indexer indexer = new Indexer();
 
-        File jsonFile = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\smallBbidyuk\\html_files.json");
+        File jsonFile = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\bbidyuk_html_files\\html_files.json");
         String jsonStr = "";
 
         //grabbing lines from jsonFile
