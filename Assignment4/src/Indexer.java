@@ -11,7 +11,9 @@ public class Indexer {
     static HashMap<Integer,ArrayList<Integer>> docid2termlist =  new HashMap<>();
     static HashMap<Integer,String> termid2term = new HashMap<>();
     static HashMap<Integer,LinkedHashSet<Integer>> termid2doclist = new HashMap<>();
-    static int counter = 0;
+    static LinkedHashMap<Integer,HashMap<Integer,Double>> termid2docidTFIDF = new LinkedHashMap<>();
+    static int termid = 0;
+    static int storedID = 0;
 
     /**
      * readFile(): Reads from file, updates corresponding attribute
@@ -43,10 +45,15 @@ public class Indexer {
 
         //checks if word is in map, if not, adds it
         for(int i = 0; i < tokenTemp.length; i++) {
-
+            boolean flag = false;
             //sample index term to term id
             if(!term2termid.containsKey(tokenTemp[i])) {
-                term2termid.put(tokenTemp[i], ++counter);
+                term2termid.put(tokenTemp[i], ++termid);
+
+            } else {
+                storedID = termid;
+                termid = term2termid.get(tokenTemp[i]);
+                flag = true;
             }
 
             //sample index doc id to term list
@@ -61,48 +68,98 @@ public class Indexer {
             }
 
             //sample index term id to term list
-            if (!termid2term.containsKey(counter)) {
-                termid2term.put(counter, tokenTemp[i]);
+            if (!termid2term.containsKey(termid)) {
+                termid2term.put(termid, tokenTemp[i]);
             }
 
-            //examples of more composite indexes: example 3, term id to doc list
-            if(termid2doclist.containsKey(counter)) {
-                LinkedHashSet<Integer> templs2 = termid2doclist.get(counter);
+            //examples of more composite indexes: example 3, term id -> doc list, tf-idf
+            if(termid2doclist.containsKey(termid)) {
+                LinkedHashSet<Integer> templs2 = termid2doclist.get(termid);
                 templs2.add(currentDoc);
-                termid2doclist.put(counter, templs2);
+                termid2doclist.put(termid, templs2);
             } else {
                 LinkedHashSet<Integer> templ2 = new LinkedHashSet<>();
                 templ2.add(currentDoc);
-                termid2doclist.put(counter, templ2);
+                termid2doclist.put(termid, templ2);
             }
+            if(flag) {
+                termid = storedID;
+            }
+
         }
 
     }
 
     /**
-     * stripFile(): Strips html flags from the input and non-alphanumerics
-     * @param html
-     * @return String
+     * whichDocHasIDAndNumberOfTimes(): creates a hashmap which lists the termID : number of documents that term appears in
+     * @return HashMap<Integer,Integer>
      */
+    private HashMap<Integer,Integer> whichDocHasIDAndNumberOfTimes()
+    {
+        HashMap<Integer,Integer> to_return = new HashMap<>();
+        for(Map.Entry<Integer,LinkedHashSet<Integer>> kv: termid2doclist.entrySet())
+        {
+            to_return.put(kv.getKey(), kv.getValue().size());
+        }
+
+
+        return to_return;
+    }
+
+    /**
+     * countingFrequencyOfTerms(): Based on the termid, it counts how many times that term appears per document
+     * @param: termList
+     * @return: HashMap<Integer,Integer>
+     */
+    private HashMap<Integer,Integer> countingFrequencyOfTerms(ArrayList<Integer> termList)
+    {
+        HashMap<Integer,Integer> to_return = new HashMap<>();
+        for (Integer item : termList)
+        {
+            if(to_return.containsKey(item))
+            {
+                to_return.put(item, to_return.get(item)+1);
+            }
+            else
+                to_return.put(item, 1);
+        }
+        return to_return;
+    }
+
+    /**
+     * makesomeTIFIDFS(): Calculates tf-idf value for each term
+     */
+    public void makeSomeTFIDFS() {
+        HashMap<Integer, Integer> helper = whichDocHasIDAndNumberOfTimes();
+        for (Map.Entry<Integer, String> is : termid2term.entrySet()) {
+            int currentTerm = is.getKey();
+            HashMap<Integer, Double> mapOfTermToTFIDF = new HashMap<>();
+            double temptfidf = 0;
+            LinkedHashSet<Integer> listOfDocsAssociatedWithTermID = termid2doclist.get(currentTerm);
+
+            for (Integer num : listOfDocsAssociatedWithTermID) {
+                int sizeOfList = docid2termlist.get(num).size();
+                ArrayList<Integer> listOfWords = docid2termlist.get(num);
+                HashMap<Integer, Integer> times = countingFrequencyOfTerms(listOfWords);
+                temptfidf = (1 + Math.log10(1+ (float)times.get(currentTerm) / sizeOfList)) * Math.log10((float)docid2termlist.size() / helper.get(currentTerm));
+                mapOfTermToTFIDF.put(num, temptfidf);
+            }
+            termid2docidTFIDF.put(currentTerm, mapOfTermToTFIDF);
+
+        }
+
+    }
+
+        /**
+         * stripFile(): Strips html flags from the input and non-alphanumerics
+         * @param html
+         * @return String
+         */
     private static String stripFile(String html) {
         String temp = Jsoup.parse(html).text();
         temp = temp.toLowerCase();
         temp = temp.replaceAll("[^A-Za-z0-9\\s]", "");
         return temp;
-    }
-
-    /**
-     * toString(): Returns content of the attribute map
-     * @return String
-     */
-    @Override
-    public String toString() {
-        String toReturn = "";
-        //prints map contents
-        for(Map.Entry<Integer,String> entry: termid2term.entrySet()) {
-            toReturn += entry.getKey() + ": " + entry.getValue() + "\n";
-        }
-        return toReturn;
     }
 
     /**
@@ -113,7 +170,9 @@ public class Indexer {
         File docid2termlistF = new File("docid2termlist.txt");
         File termid2termF = new File("termid2term.txt");
         File termid2doclistF = new File("termid2doclist.txt");
+        File termid2docidTFIDFF = new File ("termid2docidTFIDF.txt");
 
+        //writes to term2termid.txt
         try {
             if(!term2termidF.exists()) {
                 term2termidF.createNewFile();
@@ -128,6 +187,7 @@ public class Indexer {
             e.printStackTrace();
         }
 
+        //writes to docid2termlist.txt
         try {
             if(!docid2termlistF.exists()) {
                 docid2termlistF.createNewFile();
@@ -142,6 +202,7 @@ public class Indexer {
             e.printStackTrace();
         }
 
+        //writes to termid2term.txt
         try {
             if(!termid2termF.exists()) {
                 termid2termF.createNewFile();
@@ -155,6 +216,8 @@ public class Indexer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //writes to termid2doclist.txt
         try {
             if(!termid2doclistF.exists())  {
                 termid2doclistF.createNewFile();
@@ -168,5 +231,19 @@ public class Indexer {
             e.printStackTrace();
         }
 
+        //writes to termid2docidTFIDF.txt
+        try {
+            if (!termid2docidTFIDFF.exists()) {
+                termid2docidTFIDFF.createNewFile();
+            }
+
+            PrintStream out = new PrintStream(new FileOutputStream(termid2docidTFIDFF));
+            for (Map.Entry<Integer, HashMap<Integer, Double>> si : termid2docidTFIDF.entrySet()) {
+                out.println(si.getKey() + ": " + si.getValue());
+            }
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

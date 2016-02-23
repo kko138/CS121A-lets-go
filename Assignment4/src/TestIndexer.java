@@ -36,7 +36,7 @@ public class TestIndexer {
         for(final File fe: folder.listFiles()) {
            indexer.readFile(fe, json);
         }
-
+        indexer.makeSomeTFIDFS();
         indexer.writeFile();
         System.out.println("Runtime: " + (System.currentTimeMillis()-start) + " ms");
     }
