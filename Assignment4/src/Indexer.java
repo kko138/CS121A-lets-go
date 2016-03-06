@@ -5,13 +5,14 @@
 import org.jsoup.Jsoup;
 import java.io.*;
 import java.util.*;
+import helper.gt;
 
 public class Indexer {
     static HashMap<String, Integer> term2termid = new HashMap<>();
     static HashMap<Integer,ArrayList<Integer>> docid2termlist =  new HashMap<>();
     static HashMap<Integer,String> termid2term = new HashMap<>();
     static HashMap<Integer,LinkedHashSet<Integer>> termid2doclist = new HashMap<>();
-    static LinkedHashMap<Integer,HashMap<Integer,Double>> termid2docidTFIDF = new LinkedHashMap<>();
+    static LinkedHashMap<Integer,Map<Integer,Double>> termid2docidTFIDF = new LinkedHashMap<>();
     static int termid = 0;
     static int storedID = 0;
 
@@ -131,9 +132,11 @@ public class Indexer {
      */
     public void makeSomeTFIDFS() {
         HashMap<Integer, Integer> helper = whichDocHasIDAndNumberOfTimes();
+
         for (Map.Entry<Integer, String> is : termid2term.entrySet()) {
             int currentTerm = is.getKey();
             HashMap<Integer, Double> mapOfTermToTFIDF = new HashMap<>();
+            Map<Integer, Double> sorted = new TreeMap<>(new gt(mapOfTermToTFIDF));
             double temptfidf = 0;
             LinkedHashSet<Integer> listOfDocsAssociatedWithTermID = termid2doclist.get(currentTerm);
 
@@ -144,7 +147,8 @@ public class Indexer {
                 temptfidf = (1 + Math.log10(1+ (float)times.get(currentTerm) / sizeOfList)) * Math.log10((float)docid2termlist.size() / helper.get(currentTerm));
                 mapOfTermToTFIDF.put(num, temptfidf);
             }
-            termid2docidTFIDF.put(currentTerm, mapOfTermToTFIDF);
+            sorted.putAll(mapOfTermToTFIDF);
+            termid2docidTFIDF.put(currentTerm, sorted);
 
         }
 
@@ -238,7 +242,7 @@ public class Indexer {
             }
 
             PrintStream out = new PrintStream(new FileOutputStream(termid2docidTFIDFF));
-            for (Map.Entry<Integer, HashMap<Integer, Double>> si : termid2docidTFIDF.entrySet()) {
+            for (Map.Entry<Integer, Map<Integer, Double>> si : termid2docidTFIDF.entrySet()) {
                 out.println(si.getKey() + ": " + si.getValue());
             }
             out.close();
