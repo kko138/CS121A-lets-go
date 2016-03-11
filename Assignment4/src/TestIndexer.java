@@ -7,10 +7,10 @@ import org.json.*;
 public class TestIndexer {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        final File folder = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\smallBbidyuk\\Html");
+        final File folder = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\bbidyuk_html_files\\Html");
         Indexer indexer = new Indexer();
 
-        File jsonFile = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\smallBbidyuk\\html_files.json");
+        File jsonFile = new File("C:\\Users\\Sophia\\Desktop\\Sophia\\Winter 16\\INF141\\bbidyuk_html_files\\html_files.json");
         String jsonStr = "";
 
         //grabbing lines from jsonFile

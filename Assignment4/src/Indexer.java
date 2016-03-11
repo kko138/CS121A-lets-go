@@ -140,6 +140,7 @@ public class Indexer {
             double temptfidf = 0;
             LinkedHashSet<Integer> listOfDocsAssociatedWithTermID = termid2doclist.get(currentTerm);
 
+            //loop to calculate tfidf for each term in a document
             for (Integer num : listOfDocsAssociatedWithTermID) {
                 int sizeOfList = docid2termlist.get(num).size();
                 ArrayList<Integer> listOfWords = docid2termlist.get(num);
@@ -147,9 +148,22 @@ public class Indexer {
                 temptfidf = (1 + Math.log10(1+ (float)times.get(currentTerm) / sizeOfList)) * Math.log10((float)docid2termlist.size() / helper.get(currentTerm));
                 mapOfTermToTFIDF.put(num, temptfidf);
             }
-            sorted.putAll(mapOfTermToTFIDF);
-            termid2docidTFIDF.put(currentTerm, sorted);
 
+            sorted.putAll(mapOfTermToTFIDF);        //sorts tfidf for each term
+
+//            LinkedHashMap<Integer, Double> top10 = new LinkedHashMap<>();
+//
+//            //for printing out top 10 tfidf for each term
+//            int count = 0;
+//            for(Map.Entry<Integer, Double> id : sorted.entrySet()) {
+//                if(count++ == 10) {
+//                    break;
+//                }
+//                top10.put(id.getKey(), id.getValue());
+//            }
+
+            termid2docidTFIDF.put(currentTerm, sorted);
+//            termid2docidTFIDF.put(currentTerm, top10);
         }
 
     }
